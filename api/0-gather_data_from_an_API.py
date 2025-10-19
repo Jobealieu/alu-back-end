@@ -1,5 +1,8 @@
 #!/usr/bin/python3
-"""Script to gather data from an API for a given employee ID"""
+"""
+Script that gathers employee TODO list data from an API
+and displays progress information
+"""
 import requests
 import sys
 
@@ -9,30 +12,27 @@ if __name__ == "__main__":
         sys.exit(1)
     
     employee_id = sys.argv[1]
-    
-    # Base URL for the API
     base_url = "https://jsonplaceholder.typicode.com"
     
-    # Fetch user data
+    # Get employee data
     user_url = "{}/users/{}".format(base_url, employee_id)
     user_response = requests.get(user_url)
     user_data = user_response.json()
     employee_name = user_data.get("name")
     
-    # Fetch todos for the employee
+    # Get TODO list
     todos_url = "{}/todos?userId={}".format(base_url, employee_id)
     todos_response = requests.get(todos_url)
-    todos = todos_response.json()
+    todos_data = todos_response.json()
     
-    # Calculate completed tasks
-    completed_tasks = [task for task in todos if task.get("completed")]
-    total_tasks = len(todos)
-    number_of_done_tasks = len(completed_tasks)
+    # Calculate progress
+    completed_tasks = [task for task in todos_data if task.get("completed")]
+    total_tasks = len(todos_data)
+    number_done = len(completed_tasks)
     
-    # Print the first line
+    # Display results
     print("Employee {} is done with tasks({}/{}):".format(
-        employee_name, number_of_done_tasks, total_tasks))
+        employee_name, number_done, total_tasks))
     
-    # Print completed task titles
     for task in completed_tasks:
-        print("\t {}".format(task.get('title')))
+        print("\t {}".format(task.get("title")))
